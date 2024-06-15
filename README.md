@@ -176,7 +176,112 @@ line 44 - 139 added 3 inhouse parts, 2 outsource parts and 5 new products
 
 
 **F.  Add a “Buy Now” button to your product list.**
+#### filename: mainscreen.html
 
+line 86 added reference to the Buy Now button
+```angular2html
+<a th:href="@{/buyProduct(productID=${tempProduct.id})}" class="btn btn-primary btn-sm mb-3">Buy Now</a>
+```
+#### filename: confirmPurchaseSuccess.html
+added this file to show a good purchase
+```angular2html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Successful Purchase!</title>
+</head>
+<body>
+<h3>Your purchase was successful!  Enjoy your item!
+    Please come again!</h3>
+    <a href="/mainscreen" class="btn btn-primary btn-sm mb-3">Back To The Home Page</a>
+
+</body>
+</html>
+```
+#### filename: confirmPurchaseFailure
+added this file to show a failed purchase
+```angular2html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title>Purchase Failed!</title>
+</head>
+<body>
+<h3>Purchase did not complete successfully!
+    Please contact customer service.</h3>
+    <a href="/mainscreen" class="btn btn-primary btn-sm mb-3">Back To The Home Page</a>
+
+</body>
+</html>
+```
+#### filename: BuyNowController.java
+added this file to manage the Buy Now process.  It confirms whether product is in stock and if so, it will decrement the inventory by one and take the customer to a purchase confirmation page.  If not, it will take the customer to a failed purchase notification page. 
+```angular2html
+package com.example.demo.controllers;
+
+import com.example.demo.domain.Part;
+import com.example.demo.domain.Product;
+import com.example.demo.repositories.ProductRepository;
+import com.example.demo.service.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ *
+ *
+ *
+ *
+ */
+@Controller
+public class BuyNowController {
+    @Autowired
+    private ProductRepository productRepository;
+
+    @GetMapping("/buyProduct")
+    public String buyProduct(@RequestParam("productID") Long theId, Model theModel){
+        Optional<Product> productToBuy = productRepository.findById(theId);
+        if (productToBuy.isPresent()) {
+            Product product = productToBuy.get();
+            product.setInv(product.getInv() -1);
+            productRepository.save(product);
+            return "/confirmPurchaseSuccess";
+        }
+        else {
+            return "/confirmPurchaseFailure";
+        }
+    }
+}
+```
 **G.  Modify the parts to track maximum and minimum inventory:**
 
 **•  Add to the InhousePartForm and OutsourcedPartForm forms additional text inputs**
