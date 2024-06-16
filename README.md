@@ -496,10 +496,201 @@ lines 50 -55 added enforceInvLimits to the save method
 
 }
 ```
-
-
 **H.  Add validation for between or at the maximum and minimum fields.**
+**•  Display error messages for low inventory when adding and updating parts if the inventory is less than the minimum number of parts.**
+Two new validation related files created: 
+#### filename: ValidMinInv.java
+Generates an error message when default minimum inventory is violated.
+Validated by MinInvValidator.java
+```angular2html
+package com.example.demo.validators;
 
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ *
+ *
+ *
+ *
+ */
+@Constraint(validatedBy = {MinInvValidator.class})
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ValidMinInv {
+    String message() default "Inventory cannot be set below the default minimum amount.";
+    Class<?> [] groups() default {};
+    Class<? extends Payload> [] payload() default {};
+}
+```
+#### filename: MinInvValidator.java
+```angular2html
+package com.example.demo.validators;
+
+import com.example.demo.domain.Part;
+import com.example.demo.domain.Product;
+import com.example.demo.service.ProductService;
+import com.example.demo.service.ProductServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+/**
+ *
+ *
+ *
+ *
+ */
+public class MinInvValidator implements ConstraintValidator<ValidMinInv, Part> {
+    @Autowired
+    private ApplicationContext context;
+    public static  ApplicationContext myContext;
+
+    @Override
+    public void initialize(ValidMinInv constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+    @Override
+    public boolean isValid(Part part, ConstraintValidatorContext constraintValidatorContext){
+        return part.getInv() > part.getMinInv();
+    }
+}
+```
+**•  Display error messages for low inventory when adding and updating products lowers the part inventory below the minimum.**
+#### filename: Part.java
+line 4 added import of minimum and maximum validators
+```angular2html
+import com.example.demo.validators.ValidMinInv;
+```
+line 25
+```angular2html
+@ValidMinInv
+```
+#### filename: EnufPartsValidator.java
+lines 28 - 47 added an additional message to the isValid to show if part request is beyond defaults
+```angular2html
+    @Override
+    public boolean isValid(Product product, ConstraintValidatorContext constraintValidatorContext) {
+        if(context==null) return true;
+        if(context!=null)myContext=context;
+        ProductService repo = myContext.getBean(ProductServiceImpl.class);
+        if (product.getId() != 0) {
+            Product myProduct = repo.findById((int) product.getId());
+            for (Part p : myProduct.getParts()) {
+                if (p.getInv()<(product.getInv()-myProduct.getInv())){
+                    constraintValidatorContext.disableDefaultConstraintViolation();
+                    constraintValidatorContext.buildConstraintViolationWithTemplate("Not enough inventory for part, " + p.getName()).addConstraintViolation();
+                    return false;
+                }
+            }
+            return true;
+        }
+        else{
+                return true;
+            }
+    }
+```
+**•  Display error messages when adding and updating parts if the inventory is greater than the maximum.**
+Two new validation related files created:
+#### filename: ValidMaxInv.java
+Generates an error message when default maximum inventory is violated.
+Validated by MaxInvValidator.java
+```angular2html
+package com.example.demo.validators;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ *
+ *
+ *
+ *
+ */
+
+@Constraint(validatedBy = {MaxInvValidator.class})
+@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ValidMaxInv {
+    String message() default "Inventory cannot be set above the default maximum amount.";
+    Class<?> [] groups() default {};
+    Class<? extends Payload> [] payload() default {};
+}
+```
+#### filename: MaxInvValidator.java
+```angular2html
+package com.example.demo.validators;
+
+import com.example.demo.domain.Part;
+import com.example.demo.domain.Product;
+import com.example.demo.service.ProductService;
+import com.example.demo.service.ProductServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+/**
+ *
+ *
+ *
+ *
+ */
+public class MaxInvValidator implements ConstraintValidator<ValidMaxInv, Part> {
+    @Autowired
+    private ApplicationContext context;
+    public static  ApplicationContext myContext;
+
+    @Override
+    public void initialize(ValidMaxInv constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+    @Override
+    public boolean isValid(Part part, ConstraintValidatorContext constraintValidatorContext){
+        return part.getInv() < part.getMaxInv();
+    }
+}
+```
+#### filename: Part.java
+line 5 added import of minimum and maximum validators
+```angular2html
+
+import com.example.demo.validators.ValidMaxInv;
+```
+line 26
+```angular2html
+@ValidMinInv
+@ValidMaxInv
+```
+#### filename: InhousePartForm.html
+lines 32 - 36 added div to show any errors during form operation
+```angular2html
+    <div th:if="${#fields.hasErrors()}">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="error"/>
+        </ul>
+    </div>
+```
+#### filename: OutsourcedPartForm.html
+lines 33 - 37 added div to show any errors during form operation
+```angular2html
+    <div th:if="${#fields.hasErrors()}">
+        <ul>
+            <li th:each="err : ${#fields.allErrors()}" th:text="${err}" class="error"/>
+        </ul>
+    </div>
+```
 **I.  Add at least two unit tests for the maximum and minimum fields to the PartTest class in the test package.**
 
 **J.  Remove the class files for any unused validators in order to clean your code.**
