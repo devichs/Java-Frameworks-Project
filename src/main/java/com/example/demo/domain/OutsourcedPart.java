@@ -15,6 +15,8 @@ public class OutsourcedPart extends Part{
 String companyName;
 
     public OutsourcedPart() {
+        this.minInv = 0;
+        this.maxInv = 50;
     }
 
     public String getCompanyName() {

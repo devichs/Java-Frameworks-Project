@@ -41,6 +41,7 @@ public class BootStrapData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
         if(inhousePartRepository.count() == 0) {
 
             List<InhousePart> inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
@@ -51,13 +52,13 @@ public class BootStrapData implements CommandLineRunner {
             inhouse1.setName("Guitar Strings");
             inhouse1.setPrice(12.00);
             inhouse1.setInv(10);
-            //inhouse1.setMinInv(1);
-            //inhouse1.setMaxInv(100);
+            inhouse1.setMinInv(1);
+            inhouse1.setMaxInv(50);
             inhousePartRepository.save(inhouse1);
-            InhousePart theInPart = null;
+            InhousePart thePart = null;
             inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
             for (InhousePart part : inhouseParts) {
-                if (part.getName().equals("Guitar Strings")) theInPart = part;
+                if (part.getName().equals("Guitar Strings")) thePart = part;
             }
 
             InhousePart inhouse2 = new InhousePart();
@@ -65,27 +66,27 @@ public class BootStrapData implements CommandLineRunner {
             inhouse2.setName("Guitar Pick");
             inhouse2.setPrice(3.00);
             inhouse2.setInv(20);
-            //inhouse2.setMinInv(1);
-            //inhouse2.setMaxInv(100);
+            inhouse2.setMinInv(1);
+            inhouse2.setMaxInv(50);
             inhousePartRepository.save(inhouse2);
-            theInPart = null;
+            thePart = null;
             inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
             for (InhousePart part : inhouseParts) {
-                if (part.getName().equals("Guitar Pick")) theInPart = part;
+                if (part.getName().equals("Guitar Pick")) thePart = part;
             }
 
             InhousePart inhouse3 = new InhousePart();
             inhouse3.setId(9);
-            inhouse3.setName("Amp Tube");
+            inhouse3.setName("Keyboard Stand");
             inhouse3.setPrice(56.00);
             inhouse3.setInv(20);
-            //inhouse3.setMinInv(1);
-            //inhouse3.setMaxInv(100);
+            inhouse3.setMinInv(1);
+            inhouse3.setMaxInv(50);
             inhousePartRepository.save(inhouse3);
-            theInPart = null;
+            thePart = null;
             inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
             for (InhousePart part : inhouseParts) {
-                if (part.getName().equals("Amp Tube")) theInPart = part;
+                if (part.getName().equals("Amp Tube")) thePart = part;
             }
 
             //added 2 outsourced parts
@@ -97,6 +98,8 @@ public class BootStrapData implements CommandLineRunner {
             o.setInv(5);
             o.setPrice(40.0);
             o.setId(101L);
+            o.setMinInv(1);
+            o.setMaxInv(50);
             outsourcedPartRepository.save(o);
             OutsourcedPart theOutPart = null;
             outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
@@ -107,11 +110,13 @@ public class BootStrapData implements CommandLineRunner {
             System.out.println(theOutPart.getCompanyName());
 
             OutsourcedPart o2 = new OutsourcedPart();
-            o2.setCompanyName("Guitar World");
-            o2.setName("Amplifier Power Cord");
+            o2.setCompanyName("Keyboard World");
+            o2.setName("Music Stand");
             o2.setInv(5);
             o2.setPrice(25.0);
             o2.setId(105L);
+            o2.setMinInv(1);
+            o2.setMaxInv(50);
             outsourcedPartRepository.save(o2);
             OutsourcedPart theOutPart2 = null;
             outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
@@ -119,7 +124,7 @@ public class BootStrapData implements CommandLineRunner {
                 if (part.getName().equals("Amplifier Power Cord")) theOutPart2 = part;
             }
 
-            System.out.println(theOutPart.getCompanyName());
+            System.out.println(theOutPart2.getCompanyName());
 
             outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
             for (OutsourcedPart part : outsourcedParts) {

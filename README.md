@@ -284,11 +284,219 @@ public class BuyNowController {
 ```
 **G.  Modify the parts to track maximum and minimum inventory:**
 
-**•  Add to the InhousePartForm and OutsourcedPartForm forms additional text inputs**
+**•  Add additional fields to the part entity for maximum and minimum inventory.**
+#### filename: Part.java
 
+lines 32-35 added variables minInv and maxInv within @Min and @Max with messages
+```angular2html
+    @Min(value = 0, message = "Minimum inventory amount is 0")
+    int minInv;
+    @Max(value = 50, message = "Maximum inventory amount is 50")
+    int maxInv;
+```
+lines 45 - 59 added minInv and maxInv to both Part constructors
+```angular2html
+    public Part(String name, double price, int inv, int minInv, int maxInv) {
+        this.name = name;
+        this.price = price;
+        this.inv = inv;
+        this.minInv = 0;
+        this.maxInv = 50;
+    }
+
+    public Part(long id, String name, double price, int inv, int minInv, int maxInv) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.inv = inv;
+        this.minInv = 0;
+        this.maxInv = 50;
+    }
+```
+lines 102 - 116 added getters and setters for minInv and maxInv
+```angular2html
+    public int getMinInv() {
+        return minInv;
+    }
+
+    public int getMaxInv(){
+        return maxInv;
+    }
+
+    public void setMinInv(int minInv){
+        this.minInv = minInv;
+    }
+
+    public void setMaxInv(int maxInv){
+        this.maxInv = maxInv;
+    }
+```
+#### filename: InhousePart.java
+lines 17 - 20 added minInv and maxInv setting defaults
+```angular2html
+    public InhousePart() {
+        this.minInv = 0;
+        this.maxInv = 50;
+    }
+```
+#### filename: OutsourcedPart.java
+lines 17 - 20 added minInv and maxInv setting defaults
+```angular2html
+    public InhousePart() {
+        this.minInv = 0;
+        this.maxInv = 50;
+    }
+```
+**•  Modify the sample inventory to include the maximum and minimum fields.**
+#### filename: BootStrapData.java
+lines 49 - 125 added setMinInv and setMaxInv to sample inventory
+```angular2html
+            InhousePart inhouse1 = new InhousePart();
+            inhouse1.setId(1);
+            inhouse1.setName("Guitar Strings");
+            inhouse1.setPrice(12.00);
+            inhouse1.setInv(10);
+            inhouse1.setMinInv(1);
+            inhouse1.setMaxInv(50);
+            inhousePartRepository.save(inhouse1);
+            InhousePart thePart = null;
+            inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
+            for (InhousePart part : inhouseParts) {
+                if (part.getName().equals("Guitar Strings")) thePart = part;
+            }
+
+            InhousePart inhouse2 = new InhousePart();
+            inhouse2.setId(5);
+            inhouse2.setName("Guitar Pick");
+            inhouse2.setPrice(3.00);
+            inhouse2.setInv(20);
+            inhouse2.setMinInv(1);
+            inhouse2.setMaxInv(50);
+            inhousePartRepository.save(inhouse2);
+            thePart = null;
+            inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
+            for (InhousePart part : inhouseParts) {
+                if (part.getName().equals("Guitar Pick")) thePart = part;
+            }
+
+            InhousePart inhouse3 = new InhousePart();
+            inhouse3.setId(9);
+            inhouse3.setName("Keyboard Stand");
+            inhouse3.setPrice(56.00);
+            inhouse3.setInv(20);
+            inhouse3.setMinInv(1);
+            inhouse3.setMaxInv(50);
+            inhousePartRepository.save(inhouse3);
+            thePart = null;
+            inhouseParts = (List<InhousePart>) inhousePartRepository.findAll();
+            for (InhousePart part : inhouseParts) {
+                if (part.getName().equals("Amp Tube")) thePart = part;
+            }
+
+            //added 2 outsourced parts
+            List<OutsourcedPart> outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
+
+            OutsourcedPart o = new OutsourcedPart();
+            o.setCompanyName("Musicians Friend");
+            o.setName("Guitar Strap");
+            o.setInv(5);
+            o.setPrice(40.0);
+            o.setId(101L);
+            o.setMinInv(1);
+            o.setMaxInv(50);
+            outsourcedPartRepository.save(o);
+            OutsourcedPart theOutPart = null;
+            outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
+            for (OutsourcedPart part : outsourcedParts) {
+                if (part.getName().equals("Guitar Strap")) theOutPart = part;
+            }
+
+            System.out.println(theOutPart.getCompanyName());
+
+            OutsourcedPart o2 = new OutsourcedPart();
+            o2.setCompanyName("Keyboard World");
+            o2.setName("Music Stand");
+            o2.setInv(5);
+            o2.setPrice(25.0);
+            o2.setId(105L);
+            o2.setMinInv(1);
+            o2.setMaxInv(50);
+            outsourcedPartRepository.save(o2);
+            OutsourcedPart theOutPart2 = null;
+            outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
+            for (OutsourcedPart part : outsourcedParts) {
+                if (part.getName().equals("Amplifier Power Cord")) theOutPart2 = part;
+            }
+```
+**•  Add to the InhousePartForm and OutsourcedPartForm forms additional text inputs for the inventory so the user can set the maximum and minimum values.**
+#### filename: InhousePartForm.html
+lines 24 - 28 added minInv and maxInv text inputs
+```angular2html
+<p><input type="text" th:field="*{minInv}" placeholder="Minimum Inventory" class="form-control mb-4 col-4"/></p>
+    <p th:if="${#fields.hasErrors('minInv')}" th:errors="*{minInv}">Minimum Inventory Error</p>
+
+<p><input type="text" th:field="*{maxInv}" placeholder="Maximum Inventory" class="form-control mb-4 col-4"/></p>
+    <p th:if="${#fields.hasErrors('maxInv')}" th:errors="*{maxInv}">Maximum Inventory Error</p>
+```
+#### filename: OutsourcedPartForm.html
+lines 25 - 29 added minInv and maxInv text inputs
+```angular2html
+<p><input type="text" th:field="*{minInv}" placeholder="Minimum Inventory" class="form-control mb-4 col-4"/></p>
+    <p th:if="${#fields.hasErrors('minInv')}" th:errors="*{minInv}">Minimum Inventory Error</p>
+
+<p><input type="text" th:field="*{maxInv}" placeholder="Maximum Inventory" class="form-control mb-4 col-4"/></p>
+    <p th:if="${#fields.hasErrors('maxInv')}" th:errors="*{maxInv}">Maximum Inventory Error</p>
+```
 **•  Rename the file the persistent storage is saved to.**
-
+#### filename: application.properties
+line 6 modified spring.datasource.url=jdbc:h2:file: from ~/spring-boot-h2-db102  to db103 and subsequently to db104
+```angular2html
+spring.datasource.url=jdbc:h2:file:~/spring-boot-h2-db104
+```
 **•  Modify the code to enforce that the inventory is between or at the minimum and maximum value.**
+#### filename: Part.java
+lines 131 - 138 added enforceInvLimits() method
+```angular2html
+    public void enforceInvLimits(){
+        if(this.inv < this.minInv) {
+            throw new RuntimeException("Entered inventory value less than the set minimum allowed.");
+        }
+        else if (this.inv > this.maxInv) {
+            throw new RuntimeException("Entered inventory value exceeds the set maximum allowed.");
+        }
+    }
+```
+#### filename: PartServiceImpl.java
+lines 58 - 63 added enforceInvLimits to the save method
+```angular2html
+    @Override
+    public void save(Part thePart) {
+        thePart.enforceInvLimits();
+            partRepository.save(thePart);
+
+    }
+```
+#### filename: InhousePartServiceImpl.java
+lines 52 -57 added enforceInvLimits to the save method
+```angular2html
+    @Override
+    public void save(InhousePart thePart) {
+        thePart.enforceInvLimits();
+        partRepository.save(thePart);
+
+    }
+```
+#### filename: OutsourcedPartServiceImpl.java
+lines 50 -55 added enforceInvLimits to the save method
+```angular2html
+   @Override
+    public void save(OutsourcedPart thePart) {
+        thePart.enforceInvLimits();
+        partRepository.save(thePart);
+
+}
+```
+
 
 **H.  Add validation for between or at the maximum and minimum fields.**
 
