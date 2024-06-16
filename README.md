@@ -692,7 +692,25 @@ lines 33 - 37 added div to show any errors during form operation
     </div>
 ```
 **I.  Add at least two unit tests for the maximum and minimum fields to the PartTest class in the test package.**
+#### filename: PartTest.java
+lines 95 - 111 added two unit tests on getMinInv() and getMaxInv()
+```angular2html
+    @Test
+    void getMinInv(){
+        int mininv = 0;
+        partIn.setMinInv(mininv);
+        assertEquals(mininv,partIn.getMinInv());
+        partOut.setMinInv(mininv);
+        assertEquals(mininv,partOut.getMinInv());
+    }
 
+    @Test
+    void getMaxInv(){
+        int maxinv = 50;
+        partIn.setMaxInv(maxinv);
+        assertEquals(maxinv,partIn.getMaxInv());
+        partOut.setMaxInv(maxinv);
+        assertEquals(maxinv,partOut.getMaxInv());
+    }
+```
 **J.  Remove the class files for any unused validators in order to clean your code.**
-
-**K.  Demonstrate professional communication in the content and presentation of your submission.**
