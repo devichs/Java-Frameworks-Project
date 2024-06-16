@@ -714,3 +714,9 @@ lines 95 - 111 added two unit tests on getMinInv() and getMaxInv()
     }
 ```
 **J.  Remove the class files for any unused validators in order to clean your code.**
+Referencing https://www.jetbrains.com/help/phpstorm/php-unused-declaration.html
+From Code ->Inspect Code -> Whole Project: 
+Two validator files were returned.  Both are showing as never used. 
+These two files were removed from the project: 
+#### filename: DeletePartValidator.java
+#### filename: ValidDeletePart.java
