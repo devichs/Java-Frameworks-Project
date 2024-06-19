@@ -121,7 +121,7 @@ public class BootStrapData implements CommandLineRunner {
             OutsourcedPart theOutPart2 = null;
             outsourcedParts = (List<OutsourcedPart>) outsourcedPartRepository.findAll();
             for (OutsourcedPart part : outsourcedParts) {
-                if (part.getName().equals("Amplifier Power Cord")) theOutPart2 = part;
+                if (part.getName().equals("Music Stand")) theOutPart2 = part;
             }
 
             System.out.println(theOutPart2.getCompanyName());
@@ -132,22 +132,25 @@ public class BootStrapData implements CommandLineRunner {
             }
 
             //add five new products
-            Product guitar = new Product("guitar", 1100.0, 15);
-            Product drums = new Product("drums", 2200.0, 15);
-            Product keyboard = new Product("keyboard", 1500.0, 15);
-            Product violin = new Product("violin", 3500, 15);
-            Product tuba = new Product("tuba", 400, 15);
-            productRepository.save(guitar);
-            productRepository.save(drums);
-            productRepository.save(keyboard);
-            productRepository.save(violin);
-            productRepository.save(tuba);
+            if(productRepository.count() == 0) {
+                Product guitar = new Product("Guitar", 1100.0, 30);
+                Product drums = new Product("Drums", 2200.0, 30);
+                Product keyboard = new Product("Keyboard", 1500.0, 30);
+                Product violin = new Product("Violin", 3500.0, 30);
+                Product tuba = new Product("Tuba", 400.0, 30);
 
-            System.out.println("Started in Bootstrap");
-            System.out.println("Number of Products" + productRepository.count());
-            System.out.println(productRepository.findAll());
-            System.out.println("Number of Parts" + partRepository.count());
-            System.out.println(partRepository.findAll());
+                productRepository.save(guitar);
+                productRepository.save(drums);
+                productRepository.save(keyboard);
+                productRepository.save(violin);
+                productRepository.save(tuba);
+
+                System.out.println("Started in Bootstrap");
+                System.out.println("Number of Products" + productRepository.count());
+                System.out.println(productRepository.findAll());
+                System.out.println("Number of Parts" + partRepository.count());
+                System.out.println(partRepository.findAll());
+            }
         }
     }
 }

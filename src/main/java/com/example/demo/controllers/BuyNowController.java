@@ -33,11 +33,16 @@ public class BuyNowController {
         Optional<Product> productToBuy = productRepository.findById(theId);
         if (productToBuy.isPresent()) {
             Product product = productToBuy.get();
-            product.setInv(product.getInv() -1);
-            productRepository.save(product);
-            return "/confirmPurchaseSuccess";
+            if(product.getInv() > 0) {
+                product.setInv(product.getInv() - 1);
+                productRepository.save(product);
+                return "/confirmPurchaseSuccess";
+            }
+            else{
+                return "/confirmPurchaseFailure";
+            }
         }
-        else {
+        else{
             return "/confirmPurchaseFailure";
         }
     }

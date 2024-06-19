@@ -714,9 +714,76 @@ lines 95 - 111 added two unit tests on getMinInv() and getMaxInv()
     }
 ```
 **J.  Remove the class files for any unused validators in order to clean your code.**
-Referencing https://www.jetbrains.com/help/phpstorm/php-unused-declaration.html
+
+Referencing: 
+```
+https://www.jetbrains.com/help/phpstorm/php-unused-declaration.html
+```
 From Code ->Inspect Code -> Whole Project: 
 Two validator files were returned.  Both are showing as never used. 
 These two files were removed from the project: 
 #### filename: DeletePartValidator.java
 #### filename: ValidDeletePart.java
+
+**Revision attempt 1.**
+
+E. Sample Inventory.  Product list is empty. 
+
+#### filename: BootStrapData.java
+Updated the adding of products to the product repository by adding a count check.
+```angular2html
+            if(productRepository.count() == 0) {
+                Product guitar = new Product("Guitar", 1100.0, 30);
+                Product drums = new Product("Drums", 2200.0, 30);
+                Product keyboard = new Product("Keyboard", 1500.0, 30);
+                Product violin = new Product("Violin", 3500.0, 30);
+                Product tuba = new Product("Tuba", 400.0, 30);
+
+                productRepository.save(guitar);
+                productRepository.save(drums);
+                productRepository.save(keyboard);
+                productRepository.save(violin);
+                productRepository.save(tuba);
+
+                System.out.println("Started in Bootstrap");
+                System.out.println("Number of Products" + productRepository.count());
+                System.out.println(productRepository.findAll());
+                System.out.println("Number of Parts" + partRepository.count());
+                System.out.println(partRepository.findAll());
+            }
+```
+H. Validation. A suitable error message does not appear when updating or adding a new part and the part inventory exceeds the minimum or maximum.  A white label error page appears when adding or updating a product with an associated part inventory at its minimum.
+
+Updated both MinInvValidator and MaxInvValidator to include the min allowed value of 1 and max allowed value of 50
+#### filename: MinInvValidator.java
+return part.getInv() >= part.getMinInv();
+#### filename: MaxInvValidator.java
+return part.getInv() <= part.getMaxInv();
+
+Updated the BuyNowController with an additional else to show the confirmPurchaseFailure.html page if inventory is not at min or max.
+#### filename: BuyNowController.java
+```angular2html
+public class BuyNowController {
+    @Autowired
+    private ProductRepository productRepository;
+
+    @GetMapping("/buyProduct")
+    public String buyProduct(@RequestParam("productID") Long theId, Model theModel){
+        Optional<Product> productToBuy = productRepository.findById(theId);
+        if (productToBuy.isPresent()) {
+            Product product = productToBuy.get();
+            if(product.getInv() > 0) {
+                product.setInv(product.getInv() - 1);
+                productRepository.save(product);
+                return "/confirmPurchaseSuccess";
+            }
+            else{
+                return "/confirmPurchaseFailure";
+            }
+        }
+        else{
+            return "/confirmPurchaseFailure";
+        }
+    }
+}
+```
