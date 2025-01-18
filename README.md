@@ -1,12 +1,10 @@
-## D287 – JAVA FRAMEWORKS.
-My project will keep track of inventory for a customer that owns a music store.  The music store sells instruments and instrument parts.
-### PERFORMANCE ASSESSMENT STEPS.  
-**B. Create a README file that includes notes describing where in the code to find the changes you made for each of parts C to J. Each note should include the prompt, file name, line number, and change.**
+## JAVA PROJECT.
+This project was developed to keep track of inventory for a customer that owns a music store.  The music store sells instruments and instrument parts.
 
 #### filename: README.md
 This entire file was updated from the original file to track other project file changes.
 
-**C. Customize the HTML user interface for your customer’s application. The user interface should include the shop name, the product names, and the names of the parts.**
+**C. Customizations made for this project.**
 #### filename: mainscreen.html
 line 14 changed title
 ```
@@ -25,7 +23,7 @@ lne 53 changed h2 tag, Products
 <h2>Musical Instruments</h2>
 ```
 
-**D.  Add an About page to the application to describe your chosen customer’s company to web viewers and include navigation to and from the “About” page and the main screen.**
+**D.  Added an About page to the application.**
 #### filename: mainscreen.html
 
 line 20 added a button to navigate to an About Us page
@@ -65,7 +63,7 @@ added a template file called about.html.  With navigation back to mainscreen.htm
 </body>
 </html>
 ```
-**E.  Add a sample inventory appropriate for your chosen store to the application. You should have five parts and five products in your sample inventory and should not overwrite existing data in the database.**
+**E.  Added a sample inventory.**
 #### filename: BootStrapData.java
 
 Modified file by adding product and part information
@@ -175,7 +173,7 @@ line 44 - 139 added 3 inhouse parts, 2 outsource parts and 5 new products
 ```
 
 
-**F.  Add a “Buy Now” button to your product list.**
+**F.  Added a “Buy Now” button.**
 #### filename: mainscreen.html
 
 line 86 added reference to the Buy Now button
@@ -282,9 +280,9 @@ public class BuyNowController {
     }
 }
 ```
-**G.  Modify the parts to track maximum and minimum inventory:**
+**G.  Modified the parts to track maximum and minimum inventory:**
 
-**•  Add additional fields to the part entity for maximum and minimum inventory.**
+**•  Added additional fields to the part entity for maximum and minimum inventory.**
 #### filename: Part.java
 
 lines 32-35 added variables minInv and maxInv within @Min and @Max with messages
@@ -428,7 +426,7 @@ lines 49 - 125 added setMinInv and setMaxInv to sample inventory
                 if (part.getName().equals("Amplifier Power Cord")) theOutPart2 = part;
             }
 ```
-**•  Add to the InhousePartForm and OutsourcedPartForm forms additional text inputs for the inventory so the user can set the maximum and minimum values.**
+**•  Added to the InhousePartForm and OutsourcedPartForm forms additional text inputs for the inventory so the user can set the maximum and minimum values.**
 #### filename: InhousePartForm.html
 lines 24 - 28 added minInv and maxInv text inputs
 ```angular2html
@@ -496,7 +494,7 @@ lines 50 -55 added enforceInvLimits to the save method
 
 }
 ```
-**H.  Add validation for between or at the maximum and minimum fields.**
+**H.  Added validation for between or at the maximum and minimum fields.**
 **•  Display error messages for low inventory when adding and updating parts if the inventory is less than the minimum number of parts.**
 Two new validation related files created: 
 #### filename: ValidMinInv.java
@@ -562,7 +560,7 @@ public class MinInvValidator implements ConstraintValidator<ValidMinInv, Part> {
     }
 }
 ```
-**•  Display error messages for low inventory when adding and updating products lowers the part inventory below the minimum.**
+**•  Added error messages for low inventory when adding and updating products lowers the part inventory below the minimum.**
 #### filename: Part.java
 line 4 added import of minimum and maximum validators
 ```angular2html
@@ -596,7 +594,7 @@ lines 28 - 47 added an additional message to the isValid to show if part request
             }
     }
 ```
-**•  Display error messages when adding and updating parts if the inventory is greater than the maximum.**
+**•  Added error messages when adding and updating parts if the inventory is greater than the maximum.**
 Two new validation related files created:
 #### filename: ValidMaxInv.java
 Generates an error message when default maximum inventory is violated.
@@ -691,7 +689,7 @@ lines 33 - 37 added div to show any errors during form operation
         </ul>
     </div>
 ```
-**I.  Add at least two unit tests for the maximum and minimum fields to the PartTest class in the test package.**
+**I.  Added two unit tests for the maximum and minimum fields to the PartTest class in the test package.**
 #### filename: PartTest.java
 lines 95 - 111 added two unit tests on getMinInv() and getMaxInv()
 ```angular2html
@@ -713,7 +711,7 @@ lines 95 - 111 added two unit tests on getMinInv() and getMaxInv()
         assertEquals(maxinv,partOut.getMaxInv());
     }
 ```
-**J.  Remove the class files for any unused validators in order to clean your code.**
+**J.  Removed the class files for any unused validators in order to clean your code.**
 
 Referencing: 
 ```
@@ -752,7 +750,7 @@ Updated the adding of products to the product repository by adding a count check
                 System.out.println(partRepository.findAll());
             }
 ```
-H. Validation. A suitable error message does not appear when updating or adding a new part and the part inventory exceeds the minimum or maximum.  A white label error page appears when adding or updating a product with an associated part inventory at its minimum.
+H. Added validation.
 
 Updated both MinInvValidator and MaxInvValidator to include the min allowed value of 1 and max allowed value of 50
 #### filename: MinInvValidator.java
